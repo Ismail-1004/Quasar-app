@@ -33,7 +33,7 @@
       
       <p v-else class="text-center q-mt-lg text-h4">Продуктов не найдено</p>
 
-      <Pagination v-if="getProductsList.length >= 5"
+      <Pagination v-if="getProductsList.length > 4"
         @page-click="pageClick"
       />
 
@@ -90,9 +90,15 @@ export default defineComponent({
   computed: {
     ...mapGetters(["getProductsList", "getProductsLoader"]),
     filteredProducts () {
+      const productsCopy = [...this.getProductsList]
+
+      if (productsCopy.length < 5 && this.pageNumber !== 1) {
+        this.pageNumber = 1
+      }
+
       let from = (this.pageNumber - 1) * this.userPage
       let to = from + this.userPage
-      const productsCopy = [...this.getProductsList]
+      
 
       return productsCopy.sort((a, b) => b.created_date - a.created_date).slice(from, to)
     }
